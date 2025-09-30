@@ -7,7 +7,6 @@ outputs/
 *.log
 
 # Development files
-test.py
 .pytest_cache/
 
 # Python cache
