@@ -8,35 +8,12 @@ AI-driven tool built with CrewAI that optimizes job applications through multipl
 - **Resume Optimization**: Get tailored suggestions to optimize your resume for specific roles
 - **Cover Letter Generation**: Create personalized, professional cover letters
 - **Interview Preparation**: Generate relevant interview questions with suggested answers
-- **Modern UI**: Clean Streamlit interface with file upload and text input options
+- **Streamlit UI**: Clean Streamlit interface with file upload and text input options
 - **Application History**: Save and review past job applications
 - **Download Results**: Export all generated documents as Markdown files
 
 ## Architecture
-
-The Job Application Assistant uses a multi-agent CrewAI system with the following components:
-
-```
-
-            ┌────────────────────┐    ┌─────────────────────┐    ┌────────────────────┐
-            │    Streamlit UI    │────│  Job Application    │────│    Output Files    │
-            │                    │    │     Assistant       │    │       (.md)        │
-            └────────────────────┘    └─────────────────────┘    └────────────────────┘
-                                                  │
-                                  ┌───────────────┼─────────────────────────┐
-                                  │               │                         │
-                     ┌────────────▼───────┐ ┌─────▼──────────────┐ ┌────────▼───────────┐
-                     │   Job Analyzer     │ │ Resume Optimizer   │ │  Cover Letter      │
-                     │       Agent        │ │       Agent        │ │      Writer        │
-                     └────────────────────┘ └────────────────────┘ └────────────────────┘
-                                                  │
-                                      ┌────────────────────┐
-                                      │  Interview Coach   │
-                                      │       Agent        │
-                                      └────────────────────┘
-
-
-```
+![Main Interface](assets/Architecture.png)
 
 ### Agent Roles:
 - **Job Analyzer**: Extracts key requirements from job descriptions
@@ -144,7 +121,7 @@ job-application-assistant/
 
 
 ## Main Interface
-![Main Interface](UI.png)
+![Main Interface](assets/UI.png)
 
 
 ## ⚙️ Configuration
