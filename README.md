@@ -18,23 +18,23 @@ AI-driven tool that uses CrewAI to help you optimize your job applications throu
 The Job Application Assistant uses a multi-agent CrewAI system with the following components:
 
 ```
-                    ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-                    │   Streamlit UI  │────│  Job Application │────│   Output Files  │
-                    │                 │    │    Assistant     │    │   (.md files)   │
-                    └─────────────────┘    └──────────────────┘    └─────────────────┘
-                                                    │
-                                    ┌───────────────┼───────────────┐
-                                    │               │               │
-                            ┌───────▼──────┐ ┌─────▼─────┐ ┌─────▼──────┐
-                            │ Job Analyzer │ │Resume     │ │Cover Letter│
-                            │   Agent      │ │Optimizer  │ │ Writer     │
-                            └──────────────┘ │Agent      │ └────────────┘
-                                             └───────────┘        
-                                                    │
-                                            ┌───────▼─────────┐
-                                            │ Interview Coach │
-                                            │     Agent       │
-                                            └─────────────────┘
+                  ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+                  │   Streamlit UI  │────│  Job Application │────│   Output Files  │
+                  │                 │    │    Assistant     │    │   (.md files)   │
+                  └─────────────────┘    └──────────────────┘    └─────────────────┘
+                                                  │
+                                  ┌───────────────┼───────────────┐
+                                  │               │               │
+                          ┌───────▼──────┐  ┌─────▼─────┐   ┌─────▼──────┐
+                          │ Job Analyzer │  │Resume     │   │Cover Letter│
+                          │   Agent      │  │Optimizer  │   │ Writer     │
+                          └──────────────┘  │Agent      │   └────────────┘
+                                            └───────────┘        
+                                                  │
+                                          ┌───────▼─────────┐
+                                          │ Interview Coach │
+                                          │     Agent       │
+                                          └─────────────────┘
 ```
 
 ### Agent Roles:
