@@ -1,5 +1,5 @@
 """
-Streamlit UI for Job Application Assistant
+Modern Streamlit UI for Job Application Assistant
 """
 import streamlit as st
 import os
@@ -17,10 +17,10 @@ from src.main import JobApplicationAssistant
 from src.utils.pdf_processor import PDFProcessor
 from src.ui.app import UIComponents
 
-# Set page configuration
+# Set page configuration with modern settings
 st.set_page_config(
-    page_title="Job Application Assistant",
-    page_icon="📝",
+    page_title="AI Job Application Assistant",
+    page_icon="🚀",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -118,79 +118,114 @@ def init_session_state():
     if "input_method" not in st.session_state:
         st.session_state.input_method = "text"
 
-# Application Pages
 def display_application_page():
-    """Display the main application page"""
-    # Job Information
-    st.markdown("<h3 class='section-header'>Job Information</h3>", unsafe_allow_html=True)
-    col1, col2 = st.columns(2)
+    """Display the main application page with clear input sections"""
     
+    # Job Information Section
+    st.markdown("### 💼 Job Information")
+    col1, col2 = st.columns(2)
     with col1:
-        job_title = st.text_input("Job Title", value=st.session_state.job_title)
+        job_title = st.text_input(
+            "Job Title", 
+            value=st.session_state.job_title,
+            placeholder="e.g., Senior Software Engineer"
+        )
         st.session_state.job_title = job_title
     
     with col2:
-        company = st.text_input("Company", value=st.session_state.company)
+        company = st.text_input(
+            "Company", 
+            value=st.session_state.company,
+            placeholder="e.g., Google, Microsoft, Amazon"
+        )
         st.session_state.company = company
     
-    # Job Description Input
-    st.markdown("<h3 class='section-header'>Job Description</h3>", unsafe_allow_html=True)
-    input_method = st.radio("Input method", ["Text", "Upload File"], horizontal=True)
-    st.session_state.input_method = input_method
+    st.markdown("---")
     
-    if input_method == "Text":
-        job_description = st.text_area("Paste the job description here", 
-                                      height=200, 
-                                      value=st.session_state.job_description)
+    # Job Description Section
+    st.markdown("### 📋 Job Description")
+    
+    input_method = st.radio(
+        "How would you like to provide the job description?",
+        ["📝 Text Input", "📄 File Upload"], 
+        horizontal=True
+    )
+    
+    if input_method == "📝 Text Input":
+        job_description = st.text_area(
+            "Paste the job description here:", 
+            height=200, 
+            value=st.session_state.job_description,
+            placeholder="Copy and paste the complete job description including responsibilities, requirements, and qualifications..."
+        )
         st.session_state.job_description = job_description
     else:
-        job_file = st.file_uploader("Upload job description", 
-                                   type=["pdf", "txt"], 
-                                   key="job_file")
+        job_file = st.file_uploader(
+            "Upload job description file", 
+            type=["pdf", "txt"], 
+            key="job_file"
+        )
         if job_file:
             job_description = extract_text_from_file(job_file)
             if job_description:
                 st.session_state.job_description = job_description
-                st.success("Job description loaded successfully!")
-                with st.expander("Preview Job Description"):
-                    st.text(job_description[:500] + ("..." if len(job_description) > 500 else ""))
+                st.success("✅ Job description loaded successfully!")
+                with st.expander("📖 Preview Job Description"):
+                    preview_text = job_description[:800] + ("..." if len(job_description) > 800 else "")
+                    st.text(preview_text)
+
+    st.markdown("---")
     
-    # Resume Input
-    st.markdown("<h3 class='section-header'>Your Resume</h3>", unsafe_allow_html=True)
-    resume_method = st.radio("Input method ", ["Text", "Upload File"], horizontal=True, key="resume_method")
+    # Resume Section
+    st.markdown("### 👤 Your Resume")
     
-    if resume_method == "Text":
-        resume_text = st.text_area("Paste your resume here", 
-                                  height=200, 
-                                  value=st.session_state.resume_text)
+    resume_method = st.radio(
+        "How would you like to provide your resume?",
+        ["📝 Text Input", "📄 File Upload"], 
+        horizontal=True, 
+        key="resume_method"
+    )
+    
+    if resume_method == "📝 Text Input":
+        resume_text = st.text_area(
+            "Paste your resume content here:", 
+            height=200, 
+            value=st.session_state.resume_text,
+            placeholder="Copy and paste your complete resume including experience, education, skills, and achievements..."
+        )
         st.session_state.resume_text = resume_text
     else:
-        resume_file = st.file_uploader("Upload your resume", 
-                                     type=["pdf", "txt"], 
-                                     key="resume_file")
+        resume_file = st.file_uploader(
+            "Upload your resume", 
+            type=["pdf", "txt"], 
+            key="resume_file"
+        )
         if resume_file:
             resume_text = extract_text_from_file(resume_file)
             if resume_text:
                 st.session_state.resume_text = resume_text
-                st.success("Resume loaded successfully!")
-                with st.expander("Preview Resume"):
-                    st.text(resume_text[:500] + ("..." if len(resume_text) > 500 else ""))
+                st.success("✅ Resume loaded successfully!")
+                with st.expander("📖 Preview Resume"):
+                    preview_text = resume_text[:800] + ("..." if len(resume_text) > 800 else "")
+                    st.text(preview_text)
+
+    st.markdown("---")
     
-    # Submit Button
-    if st.button("Optimize My Application"):
+    # Processing Section
+    st.markdown("### 🚀 Generate Your Optimized Application")
+    
+    if st.button("🎯 Optimize My Application", type="primary", use_container_width=True):
         # Validate inputs
-        if not st.session_state.job_description:
-            st.error("Please enter a job description.")
-            return
+        if not st.session_state.job_description.strip():
+            st.error("📋 Please provide a job description to continue.")
+            st.stop()
         
-        if not st.session_state.resume_text:
-            st.error("Please enter your resume.")
-            return
+        if not st.session_state.resume_text.strip():
+            st.error("👤 Please provide your resume to continue.")
+            st.stop()
         
-        # Process the application
-        st.session_state.processing = True
-        
-        with st.spinner("Processing your application... This may take a few minutes."):
+        # Show loading
+        with st.spinner("🤖 Processing your application... This may take 2-3 minutes"):
             try:
                 # Create Job Application Assistant
                 assistant = JobApplicationAssistant()
@@ -223,37 +258,144 @@ def display_application_page():
                     # Reload history
                     st.session_state.history = load_application_history()
                 
-                st.success("Application processed successfully!")
+                st.success("🎉 Application optimized successfully!")
+                st.balloons()
                 
             except Exception as e:
                 st.session_state.processing = False
-                st.error(f"An error occurred: {str(e)}")
+                st.error(f"❌ An error occurred: {str(e)}")
                 logger.error(f"Error processing application: {e}", exc_info=True)
-    
-    # Display results if available using UIComponents
-    if not st.session_state.processing and st.session_state.results:
-        UIComponents.render_results_tabs(st.session_state.results, st.session_state.saved_files)
+
+    # Display results if available
+    if st.session_state.results:
+        st.markdown("---")
+        st.markdown("## 📊 Your Application Results")
+        
+        # Create tabs for results
+        tab1, tab2, tab3, tab4 = st.tabs([
+            "🔍 Job Analysis", 
+            "📄 Resume Tips", 
+            "✉️ Cover Letter", 
+            "🎯 Interview Prep"
+        ])
+        
+        with tab1:
+            if "job_analysis" in st.session_state.results:
+                st.markdown(st.session_state.results["job_analysis"])
+                if "job_analysis" in st.session_state.saved_files:
+                    with open(st.session_state.saved_files["job_analysis"], 'r', encoding='utf-8') as f:
+                        st.download_button(
+                            label="📥 Download Job Analysis",
+                            data=f.read(),
+                            file_name="job_analysis.md",
+                            mime="text/markdown",
+                            key="download_job_analysis"
+                        )
+        
+        with tab2:
+            if "resume_suggestions" in st.session_state.results:
+                st.markdown(st.session_state.results["resume_suggestions"])
+                if "resume_suggestions" in st.session_state.saved_files:
+                    with open(st.session_state.saved_files["resume_suggestions"], 'r', encoding='utf-8') as f:
+                        st.download_button(
+                            label="📥 Download Resume Tips",
+                            data=f.read(),
+                            file_name="resume_suggestions.md",
+                            mime="text/markdown",
+                            key="download_resume_suggestions"
+                        )
+        
+        with tab3:
+            if "cover_letter" in st.session_state.results:
+                st.markdown(st.session_state.results["cover_letter"])
+                if "cover_letter" in st.session_state.saved_files:
+                    with open(st.session_state.saved_files["cover_letter"], 'r', encoding='utf-8') as f:
+                        st.download_button(
+                            label="📥 Download Cover Letter",
+                            data=f.read(),
+                            file_name="cover_letter.md",
+                            mime="text/markdown",
+                            key="download_cover_letter"
+                        )
+        
+        with tab4:
+            if "interview_prep" in st.session_state.results:
+                st.markdown(st.session_state.results["interview_prep"])
+                if "interview_prep" in st.session_state.saved_files:
+                    with open(st.session_state.saved_files["interview_prep"], 'r', encoding='utf-8') as f:
+                        st.download_button(
+                            label="📥 Download Interview Guide",
+                            data=f.read(),
+                            file_name="interview_prep.md",
+                            mime="text/markdown",
+                            key="download_interview_prep"
+                        )
 
 def display_history_page():
     """Display the history page"""
-    st.markdown("<h2 class='section-header'>Application History</h2>", unsafe_allow_html=True)
+    st.markdown("## 📚 Application History")
     
     if not st.session_state.history:
-        st.info("No previous applications found.")
+        st.info("📭 No application history yet. Process your first application to see history here.")
         return
     
     # Display history entries
     for i, entry in enumerate(st.session_state.history):
-        job_title = entry.get('job_title', 'Untitled')
-        company = entry.get('company', 'Unknown')
+        job_title = entry.get('job_title', 'Untitled Position')
+        company = entry.get('company', 'Unknown Company')
         timestamp = entry.get('timestamp', '')
         
-        with st.expander(f"{job_title} at {company} - {timestamp}"):
+        # Format timestamp
+        try:
+            dt = datetime.strptime(timestamp, "%Y%m%d_%H%M%S")
+            formatted_date = dt.strftime("%B %d, %Y at %I:%M %p")
+        except:
+            formatted_date = timestamp
+        
+        with st.expander(f"🎯 {job_title} at {company} - {formatted_date}"):
             if "results" in entry:
-                # Use UIComponents for consistent rendering
-                UIComponents.render_results_tabs(entry["results"], {})
-            else:
-                st.warning("No results available for this entry.")
+                # Show results in tabs
+                hist_tab1, hist_tab2, hist_tab3, hist_tab4 = st.tabs([
+                    "Job Analysis", "Resume Tips", "Cover Letter", "Interview Prep"
+                ])
+                
+                with hist_tab1:
+                    st.markdown(entry["results"].get("job_analysis", "No job analysis available."))
+                
+                with hist_tab2:
+                    st.markdown(entry["results"].get("resume_suggestions", "No resume suggestions available."))
+                
+                with hist_tab3:
+                    st.markdown(entry["results"].get("cover_letter", "No cover letter available."))
+                
+                with hist_tab4:
+                    st.markdown(entry["results"].get("interview_prep", "No interview preparation available."))
+
+def display_analytics_page():
+    """Display analytics page"""
+    st.markdown("## 📊 Analytics & Insights")
+    
+    total_applications = len(st.session_state.history)
+    
+    if total_applications == 0:
+        st.info("📈 Analytics will appear here after you process some job applications.")
+        return
+    
+    # Stats overview
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        st.metric("Applications", total_applications)
+    
+    with col2:
+        unique_companies = len(set(entry.get('company', '') for entry in st.session_state.history))
+        st.metric("Companies", unique_companies)
+    
+    with col3:
+        st.metric("Documents", total_applications * 4)
+    
+    with col4:
+        st.metric("AI Powered", "100%")
 
 # Main application
 def main():
@@ -261,23 +403,42 @@ def main():
     # Initialize session state
     init_session_state()
     
-    # Load custom CSS using UIComponents
+    # Load CSS
     UIComponents.load_css()
     
-    # App header using UIComponents
-    UIComponents.render_header()
+    # Header
+    st.markdown("# 🚀 AI Job Application Assistant")
+    st.markdown("Transform your job search with AI-powered tools that analyze job descriptions, optimize your resume, craft cover letters, and prepare you for interviews.")
     
-    # Create sidebar using UIComponents
-    page = UIComponents.render_sidebar()
+    # Sidebar navigation
+    with st.sidebar:
+        st.markdown("## Navigation")
+        page = st.radio(
+            "Choose a page:",
+            ["New Application", "History", "Analytics"]
+        )
+        
+        st.markdown("---")
+        st.markdown("### Features")
+        st.markdown("""
+        - 🔍 Smart Job Analysis
+        - 📄 Resume Optimization  
+        - ✉️ Cover Letter Generation
+        - 🎯 Interview Preparation
+        - 📥 Document Export
+        """)
     
-    # Display the selected page
+    # Display selected page
     if page == "New Application":
         display_application_page()
-    else:
+    elif page == "History":
         display_history_page()
+    else:  # Analytics
+        display_analytics_page()
     
-    # Footer using UIComponents
-    UIComponents.render_footer()
+    # Footer
+    st.markdown("---")
+    st.markdown("**Job Application Assistant** powered by [CrewAI](https://crewai.com) & [Streamlit](https://streamlit.io) • © 2025")
 
 if __name__ == "__main__":
     main()
